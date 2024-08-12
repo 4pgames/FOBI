@@ -1,0 +1,179 @@
+// https://www.tinkercad.com/things/geEtchOssnF-openledrace-debug?sharecode=Erof1xBmtMYbZ_N1g266dOMQUhMdnUEn0V4iYZtbkHg
+
+/*
+ Fourclick
+
+ */
+#include <Adafruit_NeoPixel.h>
+
+// constants won't change. They're used here to
+// set pin numbers:
+const int BUTTONPINA = 6;    // the number of the pushbutton pin
+const int BUTTONPINB = 7;    // the number of the pushbutton pin
+const int BUTTONPINC = 8;    // the number of the pushbutton pin
+const int BUTTONPIND = 9;    // the number of the pushbutton pin
+const int LEDPIN=13;
+const int NEOPIN=A0;
+const int BUZZERPIN=3;
+const int NUMPIXELS=10;
+// Variables will change:
+int ledState = HIGH;         // the current state of the output pin
+int buttonState1; 
+int buttonState2; 
+int buttonState3; 
+int buttonState4; // the current reading from the input pin
+int lastButtonState1 = LOW;
+int lastButtonState2 = LOW;
+int lastButtonState3 = LOW;
+int lastButtonState4 = LOW;// the previous reading from the input pin
+int position1;
+int position2;
+int position3;
+int position4;
+// the following variables are unsigned long's because the time, measured in miliseconds,
+// will quickly become a bigger number than can be stored in an int.
+unsigned long lastDebounceTime1 = 0;
+unsigned long lastDebounceTime2 = 0;
+unsigned long lastDebounceTime3 = 0;
+unsigned long lastDebounceTime4 = 0;// the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; incre ase if the output flickers
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel (NUMPIXELS,NEOPIN, NEO_GRB + NEO_KHZ800);
+
+int redColor = 255;
+int greenColor = 0;
+int blueColor = 0;
+
+void setup() {
+ 
+  pinMode(BUTTONPINA, INPUT);
+  pinMode(BUTTONPINB, INPUT);
+  pinMode(BUTTONPINC, INPUT);
+  pinMode(BUTTONPIND, INPUT);
+  pinMode(BUZZERPIN, OUTPUT);
+	  Serial.begin(9600);	  // Debugging only
+  // set initial LED state
+  digitalWrite(LEDPIN, ledState);
+  digitalWrite(BUZZERPIN,LOW);
+    pixels.begin();
+//  pixels.setPixelColor(0, pixels.Color(255,0, 0));
+//	drawState(5,6,7,1  );
+//	pixels.show();
+                    
+}
+bool changedState(bool currentState,unsigned long lastSwitchedTime,bool lastState){
+	unsigned long elapsedTime=millis()-lastSwitchedTime;  
+   if (elapsedTime> debounceDelay) {
+     
+     if(currentState!= lastState){
+       return true;
+     }else{
+       return false;
+       
+     }
+   }
+}
+
+
+void showWinner(int winner, int length) {
+  Serial.println(winner);
+  uint32_t colour=0;
+  if (winner ==1){
+    colour =  pixels.Color(255, 0, 0);
+  }
+  if (winner ==2){
+    colour =  pixels.Color(0, 255, 0);
+  }
+  if (winner ==3){
+    colour =  pixels.Color(0, 0, 255);
+  }
+  if (winner ==4){
+    colour =  pixels.Color(123,123, 0);
+  }
+  for(int k=1; k<40; k++){
+	for(int j=0;j<NUMPIXELS;j++){
+		pixels.setPixelColor(j, colour);
+	}
+  pixels.show();
+  delay(200);
+  
+    	//eraseAll
+	for(int j=0;j<NUMPIXELS;j++){
+		pixels.setPixelColor(j, pixels.Color(0, 0, 0));
+	}
+    pixels.show();
+    delay(200);
+  }
+  
+}
+
+int testWinner( int pos1,int pos2,int pos3,int pos4, int finishLine){
+  if (pos1==finishLine){
+  	return 1;
+  } else if (pos2==finishLine){
+    return 2;
+  } else if (pos3==finishLine){
+    return 3;
+  } else if (pos4==finishLine){
+
+	return 4;
+  } else {
+    return 0;
+  }
+  
+}
+  
+  void drawState(int p1,int p2,int p3,int p4) {
+
+	//eraseAll
+	for(int j=0;j<NUMPIXELS;j++){
+		pixels.setPixelColor(j, pixels.Color(0, 0, 0));
+	}
+  	pixels.setPixelColor(p1-1, pixels.Color(255, 0, 0));
+  	pixels.setPixelColor(p2-1, pixels.Color(0, 255, 0));
+  	pixels.setPixelColor(p3-1, pixels.Color(0, 0, 255));
+  	pixels.setPixelColor(p4-1, pixels.Color(123,123, 0));
+	
+	pixels.show();
+
+}
+
+void loop() {
+  // read the state of the switch into a local variable:
+  //delay(500);
+  int reading1= digitalRead(BUTTONPINA);
+  int reading2= digitalRead(BUTTONPINB);
+  int reading3= digitalRead(BUTTONPINC);
+  int reading4= digitalRead(BUTTONPIND);
+ 
+  // If the switch changed, due to noise or pressing:
+  if (reading1 != lastButtonState1) {
+    // reset the debouncing timer
+    lastDebounceTime1 = millis();
+    lastButtonState1 = reading1;
+  }
+
+  if ((millis() - lastDebounceTime1)> debounceDelay) {
+    
+    // if the button state has changed:
+    if (buttonState1  != reading1) {
+      buttonState1 = reading1;
+     
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState1 == HIGH) {
+        ledState = !ledState;
+        position1++;
+        if (testWinner(position1,position2,position3,position4, NUMPIXELS) == 0){
+          drawState(position1,position2,position3,position4);
+        } else {
+          showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
+        }
+        
+
+      }
+    }
+  }
+
+  // save the reading.  Next time through the loop,
+  // it'll be the lastButtonState:
+//  lastButtonState1 = reading1;
+}
