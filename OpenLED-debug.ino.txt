@@ -1,7 +1,6 @@
 /*
  Fourclick
-https://www.tinkercad.com/things/j0m3stExCy4-copy-of-openledrace-debugv4
-
+https://www.tinkercad.com/things/b18OMykqvJy-openledrace-debugv5?sharecode=RjF5-rMCzbSo8JfKslCNnUr_d0lSOmExlfMX3NMsAAg
  */
 #include <Adafruit_NeoPixel.h>
 
@@ -149,7 +148,7 @@ void displayReadings(int r1, int r2, int r3, int r4  )  {
 
 void loop() {
   // read the state of the switch into a local variable:
-  delay(200);
+  //delay(200);
   int reading1= digitalRead(BUTTONPINA);
   int reading2= digitalRead(BUTTONPINB);
   int reading3= digitalRead(BUTTONPINC);
@@ -161,38 +160,67 @@ void loop() {
     lastDebounceTime1 = millis();
     lastButtonState1 = reading1;
   }
-  
   if ((millis() - lastDebounceTime1)> debounceDelay) {
-
     // if the button state has changed:
     if (buttonState1  != reading1) {
       buttonState1 = reading1;
-     
       // only toggle the LED if the new button state is HIGH
       if (buttonState1 == HIGH) {
-        ledState = !ledState;
         position1++;
-        
-
-
-    
-      }
-      
+      }   
     }
-            if (testWinner(position1,position2,position3,position4, NUMPIXELS) == 0){
-          
-			drawState(position1,position2,position3,position4);        } else {
-          showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
-        }
-    Serial.println( buttonState1 );
   }
   
+    if (reading2 != lastButtonState2) {
+    // reset the debouncing timer
+    lastDebounceTime2= millis();
+    lastButtonState2 = reading2;
+  }
+  if ((millis() - lastDebounceTime2)> debounceDelay) {
+    // if the button state has changed:
+    if (buttonState2  != reading2) {
+      buttonState2 = reading2;
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState2 == HIGH) {
+        position2++;
+      }   
+    }
+  }
   
-
-        
-
-
-  // save the reading.  Next time through the loop,
-  // it'll be the lastButtonState:
-//  lastButtonState1 = reading1;
+    if (reading3 != lastButtonState3) {
+    // reset the debouncing timer
+    lastDebounceTime3 = millis();
+    lastButtonState3 = reading3;
+  }
+  if ((millis() - lastDebounceTime3)> debounceDelay) {
+    // if the button state has changed:
+    if (buttonState3  != reading3) {
+      buttonState3 = reading3;
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState3 == HIGH) {
+        position3++;
+      }   
+    }
+  }
+  
+    if (reading4 != lastButtonState4) {
+    // reset the debouncing timer
+    lastDebounceTime4 = millis();
+    lastButtonState4 = reading4;
+  }
+  if ((millis() - lastDebounceTime4)> debounceDelay) {
+    // if the button state has changed:
+    if (buttonState4  != reading4) {
+      buttonState4 = reading4;
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState4 == HIGH) {
+        position4++;
+      }   
+    }
+  }
+  if (testWinner(position1,position2,position3,position4, NUMPIXELS) == 0){
+    	drawState(position1,position2,position3,position4);
+  } else {
+    	showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
+  }
 }
