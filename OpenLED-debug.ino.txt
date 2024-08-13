@@ -1,6 +1,6 @@
 /*
  Fourclick
-https://www.tinkercad.com/things/b18OMykqvJy-openledrace-debugv5?sharecode=RjF5-rMCzbSo8JfKslCNnUr_d0lSOmExlfMX3NMsAAg
+
  */
 #include <Adafruit_NeoPixel.h>
 
@@ -43,14 +43,14 @@ int blueColor = 0;
 
 void setup() {
  
-  pinMode(BUTTONPINA, INPUT);
-  pinMode(BUTTONPINB, INPUT);
-  pinMode(BUTTONPINC, INPUT);
-  pinMode(BUTTONPIND, INPUT);
+  pinMode(BUTTONPINA, INPUT_PULLUP);
+  pinMode(BUTTONPINB, INPUT_PULLUP);
+  pinMode(BUTTONPINC, INPUT_PULLUP);
+  pinMode(BUTTONPIND, INPUT_PULLUP);
   pinMode(BUZZERPIN, OUTPUT);
 	  Serial.begin(9600);	  // Debugging only
   // set initial LED state
-  digitalWrite(LEDPIN, ledState);
+
   digitalWrite(BUZZERPIN,LOW);
     pixels.begin();
 //  pixels.setPixelColor(0, pixels.Color(255,0, 0));
@@ -92,14 +92,17 @@ void showWinner(int winner, int length) {
 		pixels.setPixelColor(j, colour);
 	}
   pixels.show();
-  delay(200);
+    digitalWrite(BUZZERPIN,LOW);
+    
+  delay(500);
   
     	//eraseAll
 	for(int j=0;j<NUMPIXELS;j++){
 		pixels.setPixelColor(j, pixels.Color(0, 0, 0));
 	}
     pixels.show();
-    delay(200);
+    digitalWrite(BUZZERPIN,HIGH);
+    delay(500);
   }
   
 }
@@ -122,14 +125,54 @@ int testWinner( int pos1,int pos2,int pos3,int pos4, int finishLine){
   
   void drawState(int p1,int p2,int p3,int p4) {
 
+    uint32_t colours[] = {pixels.Color(255, 0, 0), 
+                          pixels.Color(0, 255, 0),
+                          pixels.Color(0, 0, 255),
+                          pixels.Color(123,123, 0)};
+                          
+    if (p1==p2){
+      colours[0] = pixels.Color(255, 255, 255);
+      colours[1] = pixels.Color(255, 255, 255);
+      
+    }
+    if (p1==p3){
+      colours[0] = pixels.Color(255, 255, 255);
+      colours[2] = pixels.Color(255, 255, 255);
+      
+    }
+    if (p1==p4){
+      colours[0] = pixels.Color(255, 255, 255);
+      colours[3] = pixels.Color(255, 255, 255);
+      
+    }
+    if (p2==p3){
+      colours[1] = pixels.Color(255, 255, 255);
+      colours[2] = pixels.Color(255, 255, 255);
+      
+    }
+    if (p2==p4){
+      colours[1] = pixels.Color(255, 255, 255);
+      colours[3] = pixels.Color(255, 255, 255);
+      
+    }
+        if (p3==p4){
+      colours[2] = pixels.Color(255, 255, 255);
+      colours[3] = pixels.Color(255, 255, 255);
+      
+    }
+    
+    
+    
+    
+    
 	//eraseAll
 	for(int j=0;j<NUMPIXELS;j++){
 		pixels.setPixelColor(j, pixels.Color(0, 0, 0));
 	}
-  	pixels.setPixelColor(p1-1, pixels.Color(255, 0, 0));
-  	pixels.setPixelColor(p2-1, pixels.Color(0, 255, 0));
-  	pixels.setPixelColor(p3-1, pixels.Color(0, 0, 255));
-  	pixels.setPixelColor(p4-1, pixels.Color(123,123, 0));
+  	pixels.setPixelColor(p1-1, colours[0]);
+  	pixels.setPixelColor(p2-1, colours[1]);
+  	pixels.setPixelColor(p3-1, colours[2]);
+  	pixels.setPixelColor(p4-1, colours[3]);
 	
 	pixels.show();
 
