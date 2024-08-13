@@ -1,7 +1,6 @@
-// https://www.tinkercad.com/things/geEtchOssnF-openledrace-debug?sharecode=Erof1xBmtMYbZ_N1g266dOMQUhMdnUEn0V4iYZtbkHg
-
 /*
  Fourclick
+https://www.tinkercad.com/things/j0m3stExCy4-copy-of-openledrace-debugv4
 
  */
 #include <Adafruit_NeoPixel.h>
@@ -137,23 +136,34 @@ int testWinner( int pos1,int pos2,int pos3,int pos4, int finishLine){
 
 }
 
+void displayReadings(int r1, int r2, int r3, int r4  )  {
+  Serial.print( r1 );
+  Serial.print(", ");
+    Serial.print( r2 );
+  Serial.print(", ");
+    Serial.print( r3 );
+  Serial.print(", ");
+    Serial.print( r4 );
+  Serial.println(" ");
+}
+
 void loop() {
   // read the state of the switch into a local variable:
-  //delay(500);
+  delay(200);
   int reading1= digitalRead(BUTTONPINA);
   int reading2= digitalRead(BUTTONPINB);
   int reading3= digitalRead(BUTTONPINC);
   int reading4= digitalRead(BUTTONPIND);
- 
+  displayReadings(reading1, reading2, reading3, reading4);
   // If the switch changed, due to noise or pressing:
   if (reading1 != lastButtonState1) {
     // reset the debouncing timer
     lastDebounceTime1 = millis();
     lastButtonState1 = reading1;
   }
-
+  
   if ((millis() - lastDebounceTime1)> debounceDelay) {
-    
+
     // if the button state has changed:
     if (buttonState1  != reading1) {
       buttonState1 = reading1;
@@ -162,16 +172,25 @@ void loop() {
       if (buttonState1 == HIGH) {
         ledState = !ledState;
         position1++;
-        if (testWinner(position1,position2,position3,position4, NUMPIXELS) == 0){
-          drawState(position1,position2,position3,position4);
-        } else {
-          showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
-        }
         
 
+
+    
       }
+      
     }
+            if (testWinner(position1,position2,position3,position4, NUMPIXELS) == 0){
+          
+			drawState(position1,position2,position3,position4);        } else {
+          showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
+        }
+    Serial.println( buttonState1 );
   }
+  
+  
+
+        
+
 
   // save the reading.  Next time through the loop,
   // it'll be the lastButtonState:
