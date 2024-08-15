@@ -1,6 +1,6 @@
 /*
  Fourclick
-https://www.tinkercad.com/things/235RyelWK4j-openledrace-debugv9?sharecode=mtz4PlZRRHnsZtb2A1joResG-DCvWRHsgdKcK9NQKBk
+
  */
 #include <Adafruit_NeoPixel.h>
 
@@ -13,7 +13,7 @@ const int BUTTONPIND = 9;    // the number of the pushbutton pin
 const int LEDPIN=13;
 const int NEOPIN=A0;
 const int BUZZERPIN=3;
-const int NUMPIXELS=10;
+const int NUMPIXELS=30;
 // Variables will change:
 int ledState = HIGH;         // the current state of the output pin
 int buttonState1; 
@@ -48,18 +48,18 @@ void setup() {
   pinMode(BUTTONPINC, INPUT_PULLUP);
   pinMode(BUTTONPIND, INPUT_PULLUP);
   pinMode(BUZZERPIN, OUTPUT);
-	  Serial.begin(9600);	  // Debugging only
+    Serial.begin(9600);   // Debugging only
   // set initial LED state
 
   digitalWrite(BUZZERPIN,LOW);
     pixels.begin();
 //  pixels.setPixelColor(0, pixels.Color(255,0, 0));
-//	drawState(5,6,7,1  );
-//	pixels.show();
+//  drawState(5,6,7,1  );
+//  pixels.show();
                     
 }
 bool changedState(bool currentState,unsigned long lastSwitchedTime,bool lastState){
-	unsigned long elapsedTime=millis()-lastSwitchedTime;  
+  unsigned long elapsedTime=millis()-lastSwitchedTime;  
    if (elapsedTime> debounceDelay) {
      
      if(currentState!= lastState){
@@ -87,36 +87,36 @@ void showWinner(int winner, int length) {
   if (winner ==4){
     colour =  pixels.Color(123,123, 0);
   }
-  for(int k=1; k<40; k++){
-	for(int j=0;j<NUMPIXELS;j++){
-		pixels.setPixelColor(j, colour);
-	}
+  for(int k=1; k<10; k++){
+  for(int j=0;j<NUMPIXELS;j++){
+    pixels.setPixelColor(j, colour);
+  }
   pixels.show();
     digitalWrite(BUZZERPIN,LOW);
     
-  delay(500);
+  delay(100);
   
-    	//eraseAll
-	for(int j=0;j<NUMPIXELS;j++){
-		pixels.setPixelColor(j, pixels.Color(0, 0, 0));
-	}
+      //eraseAll
+  for(int j=0;j<NUMPIXELS;j++){
+    pixels.setPixelColor(j, pixels.Color(0, 0, 0));
+  }
     pixels.show();
     digitalWrite(BUZZERPIN,HIGH);
-    delay(500);
+    delay(100);
   }
-  
+  position1=position2=position3=position4=0;
 }
 
 int testWinner( int pos1,int pos2,int pos3,int pos4, int finishLine){
   if (pos1==finishLine){
-  	return 1;
+    return 1;
   } else if (pos2==finishLine){
     return 2;
   } else if (pos3==finishLine){
     return 3;
   } else if (pos4==finishLine){
 
-	return 4;
+  return 4;
   } else {
     return 0;
   }
@@ -165,16 +165,16 @@ int testWinner( int pos1,int pos2,int pos3,int pos4, int finishLine){
     
     
     
-	//eraseAll
-	for(int j=0;j<NUMPIXELS;j++){
-		pixels.setPixelColor(j, pixels.Color(0, 0, 0));
-	}
-  	pixels.setPixelColor(p1-1, colours[0]);
-  	pixels.setPixelColor(p2-1, colours[1]);
-  	pixels.setPixelColor(p3-1, colours[2]);
-  	pixels.setPixelColor(p4-1, colours[3]);
-	
-	pixels.show();
+  //eraseAll
+  for(int j=0;j<NUMPIXELS;j++){
+    pixels.setPixelColor(j, pixels.Color(0, 0, 0));
+  }
+    pixels.setPixelColor(p1-1, colours[0]);
+    pixels.setPixelColor(p2-1, colours[1]);
+    pixels.setPixelColor(p3-1, colours[2]);
+    pixels.setPixelColor(p4-1, colours[3]);
+  
+  pixels.show();
 
 }
 
@@ -262,8 +262,8 @@ void loop() {
     }
   }
   if (testWinner(position1,position2,position3,position4, NUMPIXELS) == 0){
-    	drawState(position1,position2,position3,position4);
+      drawState(position1,position2,position3,position4);
   } else {
-    	showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
+      showWinner(testWinner(position1,position2,position3,position4, NUMPIXELS), NUMPIXELS);
   }
 }
